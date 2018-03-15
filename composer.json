@@ -1,0 +1,21 @@
+{
+    "name": "yadjet/text-translate",
+    "description": "文本内容翻译",
+    "license": "BSD-3-Clause",
+    "require": {
+        "php": ">=5.5",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "authors": [
+        {
+            "name": "hiscaler",
+            "email": "hiscaler@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "yadjet\\texTranslate\\": "src/main"
+        }
+    }
+}

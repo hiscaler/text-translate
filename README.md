@@ -2,7 +2,7 @@
 利用在线翻译接口翻译文本内容
 
 ## 安装
-composer install 
+composer require "yadjet/text-translate:dev-master" 
 
 ## 使用
 ### 搜狗翻译

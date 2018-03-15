@@ -1,7 +1,7 @@
 {
     "name": "yadjet/text-translate",
     "description": "文本内容翻译",
-    "license": "BSD-3-Clause",
+    "license": "BSD-2-Clause",
     "require": {
         "php": ">=5.5",
         "guzzlehttp/guzzle": "^6.3"

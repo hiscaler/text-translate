@@ -3,8 +3,8 @@
 namespace yadjet\texTranslate;
 
 use GuzzleHttp\Client;
+use HTMLPurifier;
 use InvalidArgumentException;
-use function print_r;
 
 /**
  * Class SogouTranslate
@@ -39,8 +39,24 @@ class SogouTranslate extends Translate
         }
         $client = new Client();
         $promises = [];
+        $pairs = [];
+        $htmlPurifier = new HTMLPurifier();
+        $imgReplacePrefix = '0000111100001111';
         foreach ($text as $key => $string) {
             $translatedTexts[$key] = null;
+            $string = strip_tags($string, '<img>');
+            $string = $htmlPurifier->purify($string);
+            preg_match_all('/<img.*>?/', $string, $matches);
+            if ($matches) {
+                foreach ($matches[0] as $matchKey => $matchValue) {
+                    $pairs[$key][$matchValue] = $imgReplacePrefix . $matchKey;
+                }
+            }
+
+            if (isset($pairs[$key])) {
+                $string = strtr($string, $pairs[$key]);
+            }
+
             $params = array_merge($this->_params, [
                 'from' => $this->_fromLanguage,
                 'to' => $this->_toLanguage,
@@ -55,11 +71,16 @@ class SogouTranslate extends Translate
                 'form_params' => $params
             ]);
         }
+
         $results = \GuzzleHttp\Promise\unwrap($promises);
         foreach ($results as $key => $result) {
             $result = json_decode($result->getBody(), true);
             if (isset($result['translate']['dit'])) {
-                $translatedTexts[$key] = $result['translate']['dit'];
+                $body = $result['translate']['dit'];
+                if (isset($pairs[$key]) && $pairs[$key]) {
+                    $body = strtr($body, array_flip($pairs[$key]));
+                }
+                $translatedTexts[$key] = nl2br($body);
             }
         }
 
